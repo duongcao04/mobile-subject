@@ -11,4 +11,5 @@
 2. Lập trình di động sẽ tiếp tục phát triển mạnh trong 10 năm tới nhờ sự gia tăng của thiết bị di động, xu hướng mobile-first, và công nghệ mới như AI, AR/VR, IoT. Sự phát triển của 5G và các nền tảng như Kotlin, Jetpack Compose cũng giúp việc phát triển ứng dụng hiệu quả hơn, mở ra nhiều cơ hội trong ngành. 
 
 3. Giao diện ứng dụng (sử dụng SwiftUI)
+<br/>
 ![UI](https://res.cloudinary.com/dqx1guyc0/image/upload/v1741074687/Github%20Images/ypbm3oo03iuplr9vghfe.png)
