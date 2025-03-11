@@ -1,4 +1,4 @@
-# Duong Cao - BaiTap01
+# Duong Cao - Tuần 1 
 
 ## Đề bài
 1. Mong muốn và định hướng của bạn sau khi học xong môn là gì?
