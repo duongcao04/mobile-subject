@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Hệ thống Quản lý thư viện</string>
+    <string name="title_home">Trang chủ</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+</resources>
