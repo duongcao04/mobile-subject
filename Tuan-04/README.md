@@ -2,10 +2,10 @@
 
 ## Đề bài
 
-- Thông tin API
- -- GET | https://amock.io/api/researchUTH/tasks
- -- GET | https://amock.io/api/researchUTH/task/1 or /2 /3 /4/...
- -- DEL | https://amock.io/api/researchUTH/task/1
+### Thông tin API
+- GET | https://amock.io/api/researchUTH/tasks
+- GET | https://amock.io/api/researchUTH/task/1 or /2 /3 /4/...
+- DEL | https://amock.io/api/researchUTH/task/1
   
 ## UI Screens
 
