@@ -21,6 +21,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import kotlinx.serialization.builtins.serializer
 
 class MainActivity : ComponentActivity() {
     private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -54,32 +55,40 @@ class MainActivity : ComponentActivity() {
 
 
     // Declare a state variable to hold the Firebase user
-    private var user by mutableStateOf<FirebaseUser?>(null)
+    private var user by mutableStateOf<FirebaseUser?>(firebaseAuth.currentUser)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this) // Initialize Firebase
         setContent {
             val navController = rememberNavController()
-            var user by remember { mutableStateOf(firebaseAuth.currentUser) }
+            val currentUser = firebaseAuth.currentUser
+            var user by remember { mutableStateOf(currentUser) }
 
             // Use Navigation to handle screen transitions
             NavHost(navController, startDestination = "authScreen") {
                 composable("authScreen") {
-                    AuthScreen({ signInWithGoogle() }, navController)
+                    AuthScreen(
+                        user, { signInWithGoogle() }, navController
+                    )
                 }
                 composable("profileScreen") {
-                    ProfileScreen(user)
+                    ProfileScreen(user, signOut(), navController)
                 }
             }
 
-            // Observe user authentication state and navigate to ProfileScreen after login
+//          Observe user authentication state and navigate to ProfileScreen after login
             LaunchedEffect(user) {
                 if (user != null) {
                     navController.navigate("profileScreen")
                 }
             }
         }
+    }
+
+    private fun signOut() {
+        FirebaseAuth.getInstance().signOut()
+        user = null
     }
 
     private fun signInWithGoogle() {
@@ -92,9 +101,6 @@ class MainActivity : ComponentActivity() {
             .requestEmail()  // Request the user's email
             .build()
 
-        // Log the Web Client ID for debugging purposes
-        Log.d("Google Sign-In", "Web Client ID: $webClientId")
-
         // Get the GoogleSignInClient and create the sign-in intent
         val googleSignInClient = GoogleSignIn.getClient(this, gso)
         val signInIntent = googleSignInClient.signInIntent
@@ -105,23 +111,23 @@ class MainActivity : ComponentActivity() {
 
     private fun firebaseAuthWithGoogle(account: GoogleSignInAccount) {
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-        firebaseAuth.signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Handle successful authentication
-                    val user = firebaseAuth.currentUser
-                    Log.d("FirebaseAuth", "Signed in as: ${user?.displayName}")
-                    Toast.makeText(this, "Authentication successful", Toast.LENGTH_SHORT).show()
-                    // Update user state
-                    user?.let {
-                        // Assign the authenticated user to the state
-                        this@MainActivity.user = it
-                    }
-                } else {
-                    Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show()
-                    // Handle sign-in failure
-                    Log.e("FirebaseAuth", "signInWithCredential:failure", task.exception)
+        firebaseAuth.signInWithCredential(credential).addOnCompleteListener(this) { task ->
+            if (task.isSuccessful) {
+                // Handle successful authentication
+                val user = firebaseAuth.currentUser
+                Log.d("FirebaseAuth", "Signed in as: ${user?.displayName}")
+                Toast.makeText(this, "Authentication successful", Toast.LENGTH_SHORT).show()
+                // Update user state
+                user?.let {
+                    // Assign the authenticated user to the state
+                    this@MainActivity.user = it
                 }
+
+            } else {
+                Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show()
+                // Handle sign-in failure
+                Log.e("FirebaseAuth", "signInWithCredential:failure", task.exception)
             }
+        }
     }
 }

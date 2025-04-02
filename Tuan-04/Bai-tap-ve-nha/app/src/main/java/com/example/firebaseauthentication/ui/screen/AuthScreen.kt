@@ -15,13 +15,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.google.firebase.auth.FirebaseUser
 
 @Composable
-fun AuthScreen(onSignInClick: () -> Unit, navController: NavController) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    val context = LocalContext.current
-
+fun AuthScreen(user: FirebaseUser?, signInWithGoogle: () -> Unit, navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxHeight()
@@ -50,7 +47,11 @@ fun AuthScreen(onSignInClick: () -> Unit, navController: NavController) {
         Text("Ready to explore? Log in to get started")
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
-            onSignInClick()
+            if (user != null) {
+                navController.navigate("profileScreen") // Điều hướng tới ProfileScreen khi đăng nhập thành công
+            } else {
+                signInWithGoogle()
+            }
         }, modifier = Modifier.clip(RoundedCornerShape(10.dp))) {
             Text(text = "Sign in with Google".uppercase())
         }
